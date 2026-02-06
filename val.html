@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Will You Be My Valentine?</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(to bottom, #ffe6f2, #fff0f5);
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Full-screen background image (hidden by default) */
+    .background-heart {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('tm.jpeg'); /* ← CHANGE THIS TO YOUR IMAGE */
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+      opacity: 0;
+      transition: opacity 1.2s ease-in;
+      z-index: -1;
+    }
+
+    .background-heart.visible {
+      opacity: 1;
+    }
+
+    h1 {
+      color: #d63031;
+      font-size: 2.8em;
+      margin: 0 0 15px 0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      font-weight: bold;
+      position: relative;
+      z-index: 2;
+    }
+
+    .heart {
+      font-size: 4em;
+      margin-bottom: 20px;
+      animation: pulse 1.5s infinite;
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .buttons {
+      display: flex;
+      gap: 20px;
+      margin: 25px 0;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn {
+      padding: 16px 32px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1.4em;
+      font-weight: bold;
+      transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .btn-yes {
+      background: #ff4757;
+      color: white;
+      width: 220px;
+    }
+
+    .btn-no {
+      background: #dfe6e9;
+      color: #2d3436;
+      width: 220px;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+
+    .message {
+      color: #636e72;
+      font-size: 1.2em;
+      margin-top: 15px;
+      min-height: 30px;
+      font-style: italic;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .success {
+      animation: fadeIn 1s;
+      text-align: center;
+      max-width: 80%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .success h1 {
+      margin-bottom: 10px;
+    }
+
+    .success p {
+      font-size: 1.5em;
+      color: #dd8585;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+      .btn {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background heart (hidden until YES is clicked) -->
+  <div class="background-heart" id="bgHeart"></div>
+
+  <div id="main-content">
+    <div class="heart">❤️</div>
+    <h1>Will you be my Valentine?</h1>
+    
+    <div class="buttons">
+      <button class="btn btn-no" id="noBtn">No</button>
+      <button class="btn btn-yes" id="yesBtn">Yes!</button>
+    </div>
+    
+    <p class="message" id="message">
+      dont click no button, it will make me sad 😢
+    </p>
+  </div>
+
+  <div id="success" class="hidden success">
+
+,    <h1>     🎉   🎉     🎉</h1>
+    <p>THANKS FOR BEING MY VALENTINE. I LOVE YOU 💕</p>
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const message = document.getElementById('message');
+    const mainContent = document.getElementById('main-content');
+    const successScreen = document.getElementById('success');
+    const bgHeart = document.getElementById('bgHeart');
+    
+    
+    const noMessages = [
+      "Think about it...",
+      "Pretty please?",
+      "I'll be sad 😢",
+      "Give me a chance!",
+      "One more time?",
+      "Last chance...",
+      "I won't give up!",
+      "SAY YES! 💕"
+    ];
+    let noClickCount = 0;
+
+    noBtn.addEventListener('click', () => {
+      if (noClickCount < noMessages.length) {
+        message.textContent = noMessages[noClickCount];
+        noBtn.textContent = noMessages[noClickCount];
+        noClickCount++;
+      } else {
+        noBtn.textContent = "SAY YES! 💕";
+        message.textContent = "You can't say no forever! 😉";
+      }
+    });
+
+    yesBtn.addEventListener('click', () => {
+      message.textContent = "Yaaay! 🎉";
+      
+      // Show success text first
+      setTimeout(() => {
+        mainContent.classList.add('hidden');
+        successScreen.classList.remove('hidden');
+        
+        // Then fade in the background heart after 1 second
+        setTimeout(() => {
+          bgHeart.classList.add('visible');
+        }, 1000);
+      }, 800);
+    });
+
+    
+    bgHeart.onerror = function() {
+      console.warn("Background image failed to load");
+    };
+  </script>
+</body>
+</html>
